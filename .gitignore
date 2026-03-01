@@ -1,0 +1,44 @@
+# ── Environment & Secrets ────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Python ───────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+venv/
+.venv/
+env/
+.Python
+
+# ── ChromaDB / Vector Store ──────────────────────────
+backend/data/
+*.sqlite3
+
+# ── Node / Frontend ─────────────────────────────────
+node_modules/
+frontend/dist/
+.vite/
+
+# ── IDE / Editor ────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── OS ──────────────────────────────────────────────
+Desktop.ini
+ehthumbs.db
+
+# ── Logs ────────────────────────────────────────────
+*.log
+npm-debug.log*
