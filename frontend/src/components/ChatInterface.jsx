@@ -128,7 +128,7 @@ export default function ChatInterface({ selectedBill, onClearBill }) {
               {selectedBill && (
                 <div className="selected-bill-info">
                   <span className="selected-bill-number">{selectedBill.bill_number}</span>
-                  <span className="selected-bill-title">{selectedBill.title?.slice(0, 80)}</span>
+                  <span className="selected-bill-title">{selectedBill.title}</span>
                   {selectedBill.introduced_date && (
                     <span className="selected-bill-date">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -9,14 +9,27 @@ const SORT_OPTIONS = [
   { value: 'date-asc',  label: 'Oldest first' },
 ]
 
-const STATUS_LABELS = [
-  'Royal Assent',
-  'Senate',
-  'Committee',
-  'Second Reading',
-  'First Reading',
-  'Introduced',
+const STATUS_RULES = [
+  { label: 'Royal Assent',     test: s => s.includes('royal assent') },
+  { label: 'Senate Committee', test: s => s.includes('committee') && s.includes('senate') },
+  { label: 'House Committee',  test: s => s.includes('committee') && s.includes('house') },
+  { label: 'Report Stage',     test: s => s.includes('report stage') },
+  { label: 'Third Reading',    test: s => s.includes('third reading') },
+  { label: 'Senate',           test: s => (s.includes('senate') || s.includes('amendments made by the senate')) && !s.includes('committee') },
+  { label: 'Second Reading',   test: s => s.includes('second reading') },
+  { label: 'First Reading',    test: s => s.includes('first reading') || s.includes('awaiting first') || s.includes('pro forma') },
+  { label: 'Introduced',       test: s => s.includes('introduced') },
+  { label: 'Defeated',         test: s => s.includes('defeated') },
 ]
+
+function classifyStatus(billStatus) {
+  if (!billStatus) return null
+  const lower = billStatus.toLowerCase()
+  for (const rule of STATUS_RULES) {
+    if (rule.test(lower)) return rule.label
+  }
+  return null
+}
 
 const PARLIAMENTS = [
   { number: 45, label: '45th Parliament (2025–present)', sessions: [1] },
@@ -32,8 +45,7 @@ const PARLIAMENTS = [
 ]
 
 function matchesStatus(billStatus, filterStatus) {
-  if (!billStatus) return false
-  return billStatus.toLowerCase().includes(filterStatus.toLowerCase())
+  return classifyStatus(billStatus) === filterStatus
 }
 
 export default function Dashboard({ onSelectBill, onOpenGeneralChat }) {
@@ -87,14 +99,11 @@ export default function Dashboard({ onSelectBill, onOpenGeneralChat }) {
   const statusOptions = useMemo(() => {
     const counts = {}
     for (const b of bills) {
-      for (const label of STATUS_LABELS) {
-        if (matchesStatus(b.status, label)) {
-          counts[label] = (counts[label] || 0) + 1
-          break
-        }
-      }
+      const label = classifyStatus(b.status)
+      if (label) counts[label] = (counts[label] || 0) + 1
     }
-    return STATUS_LABELS.filter(l => counts[l]).map(l => ({ label: l, count: counts[l] }))
+    const order = STATUS_RULES.map(r => r.label)
+    return order.filter(l => counts[l]).map(l => ({ label: l, count: counts[l] }))
   }, [bills])
 
   const filtered = useMemo(() => {
