@@ -85,8 +85,8 @@ async def generate_response(
     )
 
     if not results and bill_number:
-        logger.info(f"No results for bill {bill_number}, retrying broader search")
-        results = search(query=query, bill_number=None, n_results=n_results)
+        logger.info(f"No data found for bill {bill_number}, using general knowledge fallback")
+        return await _generate_fallback(query, bill_number)
 
     if not results:
         return await _generate_fallback(query, bill_number)
@@ -108,7 +108,7 @@ Please provide a comprehensive answer based on the context above. Cite your sour
             config=genai.types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT,
                 temperature=0.3,
-                max_output_tokens=2048,
+                max_output_tokens=8192,
             ),
         )
         answer = response.text
@@ -155,7 +155,7 @@ async def _generate_fallback(query: str, bill_number: str | None) -> ChatRespons
             config=genai.types.GenerateContentConfig(
                 system_instruction=SYSTEM_PROMPT + "\n\n" + FALLBACK_PROMPT,
                 temperature=0.3,
-                max_output_tokens=2048,
+                max_output_tokens=8192,
             ),
         )
         answer = response.text
