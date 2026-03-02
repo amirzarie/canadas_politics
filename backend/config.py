@@ -4,7 +4,7 @@ from pathlib import Path
 
 class Settings(BaseSettings):
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-3-flash-preview"
     embedding_model: str = "gemini-embedding-001"
     chroma_persist_dir: str = str(Path(__file__).parent / "data" / "chroma_db")
     chroma_collection: str = "canada_laws"
